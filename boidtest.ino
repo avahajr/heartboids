@@ -22,6 +22,12 @@ void setup() {
   background.createSprite(tft.width(), tft.height());
   background.fillSprite(TFT_BLACK);
   background.pushSprite(0, 0);
+  Serial.print("Align: ");
+  Serial.println(ALIGN_WEIGHT);
+  Serial.print("Sep: ");
+  Serial.println(SEP_WEIGHT);
+  Serial.print("Cohes: ");
+  Serial.println(COHES_WEIGHT);
 
   for (int i = 0; i < NUM_BOIDS; i++) {
     Boid *newBoid = new Boid();  // Allocate Boid on the heap
@@ -62,9 +68,6 @@ void updateBoid(Boid &currentBoid) {
   currentBoid.acc.first += sepForce.first + alignForce.first + cohesForce.first;
   currentBoid.acc.second += sepForce.second + alignForce.second + cohesForce.second;
 
-  Serial.print(currentBoid.acc.first);
-  Serial.print(" ");
-  Serial.println(currentBoid.acc.second);
   // based on the observed acceleration, update the boid position and velocity
   currentBoid.vel.first += currentBoid.acc.first;
   currentBoid.vel.second += currentBoid.acc.second;
