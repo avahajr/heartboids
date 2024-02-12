@@ -9,8 +9,8 @@ using namespace std;
 #include "heart.h"
 #include "boids.h"
 
-const int NUM_BOIDS = 20;
-const int REFRESH_DELAY = 100;
+const int NUM_BOIDS = 35;
+const int REFRESH_DELAY = 75;
 
 
 void setup() {
@@ -42,7 +42,7 @@ void loop() {
     updateBoid(*allBoids[i]);
   }
   background.pushSprite(0, 0);
-  delay(REFRESH_DELAY);
+  // delay(REFRESH_DELAY);
 }
 
 
@@ -53,10 +53,14 @@ void updateBoid(Boid &currentBoid) {
 
   // get the seperation force
   pair<float, float> sepForce = getSeparationForce(currentBoid);
+  pair<float, float> alignForce = getAlignmentForce(currentBoid);
+  pair<float, float> cohesForce = getCohesionForce(currentBoid);
+
+
   // Serial.println(sqrt(sepForce.first * sepForce.first + sepForce.second * sepForce.second));
   // and apply it
-  currentBoid.acc.first += sepForce.first;
-  currentBoid.acc.second += sepForce.second;
+  currentBoid.acc.first += sepForce.first + alignForce.first + cohesForce.first;
+  currentBoid.acc.second += sepForce.second + alignForce.second + cohesForce.second;
 
   Serial.print(currentBoid.acc.first);
   Serial.print(" ");
