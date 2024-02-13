@@ -17,16 +17,22 @@ const float MAX_SPEED = 1.5;
 const float MAX_FORCE = 0.25;
 const int DESIRED_SEP = 20;    // radius within which separation force activates
 const int NEIGHBOR_DIST = 25;  // radius within which boids are in a flock.
+const bool RANDOM = true;
+
+// float ALIGN_WEIGHT;
+// float SEP_WEIGHT;
+// float COHES_WEIGHT;
 
 // weighting the forces
-const float ALIGN_WEIGHT = .7;
-const float SEP_WEIGHT = 1.3;
-const float COHES_WEIGHT = 0.35;
 
-// const float ALIGN_WEIGHT = (float)(random(1,10)/((float)random(1,10)));
-// const float SEP_WEIGHT = (float)(random(1,10)/((float)random(1,10)));
-// const float COHES_WEIGHT = (float)(random(1,10)/((float)random(1,10)));
-
+float ALIGN_WEIGHT = .7;
+float SEP_WEIGHT = 1.3;
+float COHES_WEIGHT = 0.35;
+// } else {
+//   ALIGN_WEIGHT = (float)(random(1, 10) / ((float)random(1, 10)));
+//   SEP_WEIGHT = (float)(random(1, 10) / ((float)random(1, 10)));
+//   COHES_WEIGHT = (float)(random(1, 10) / ((float)random(1, 10)));
+// }
 struct Boid {
   pair<float, float> pos;
   pair<float, float> vel;
@@ -39,7 +45,7 @@ struct Boid {
   }
 
   ~Boid() {
-    delete boidSpr;  // Deallocate the sprite in the destructor
+    delete boidSpr;
   }
 };
 

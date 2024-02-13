@@ -1,33 +1,49 @@
-#include <iostream>
-#include <utility>
-#include <vector>
-using namespace std;
-#include <stdlib.h>
-#include <stdio.h>
-#include <TFT_eSPI.h>
-#include <Arduino.h>
 #include "heart.h"
 #include "boids.h"
+#include <Pangodream_18650_CL.h>
+
+#define ADC_PIN 34
+#define CONV_FACTOR 1.8
+#define READS 20
+Pangodream_18650_CL BL(ADC_PIN, CONV_FACTOR, READS);
+
+#include <SPI.h>
 
 const int NUM_BOIDS = 35;
 const int REFRESH_DELAY = 75;
-
+const bool DIM = true;
+void IRAM_ATTR goToSleep() {
+  esp_deep_sleep_start();
+}
 
 void setup() {
   tft.init();
   tft.setRotation(1);
-  Serial.begin(115200);
   tft.fillScreen(TFT_BLACK);
   tft.setSwapBytes(true);
+  attachInterrupt(0, goToSleep, CHANGE);
+
+  if (DIM) {
+    //set screen Back Light brightness
+    pinMode(TFT_BL, OUTPUT);
+    ledcSetup(0, 5000, 8);     // 0-15, 5000, 8
+    ledcAttachPin(TFT_BL, 0);  // TFT_BL, 0 - 15
+    ledcWrite(0, 10);          // 0-15, 0-255 (with 8 bit resolution); 0=totally dark;255=totally shiny
+  }
   background.createSprite(tft.width(), tft.height());
   background.fillSprite(TFT_BLACK);
   background.pushSprite(0, 0);
-  Serial.print("Align: ");
-  Serial.println(ALIGN_WEIGHT);
-  Serial.print("Sep: ");
-  Serial.println(SEP_WEIGHT);
-  Serial.print("Cohes: ");
-  Serial.println(COHES_WEIGHT);
+
+  /* 
+    DEBUG
+    Serial.begin(115200);
+    Serial.print("Align: ");
+    Serial.println(ALIGN_WEIGHT);
+    Serial.print("Sep: ");
+    Serial.println(SEP_WEIGHT);
+    Serial.print("Cohes: ");
+    Serial.println(COHES_WEIGHT);
+  */
 
   for (int i = 0; i < NUM_BOIDS; i++) {
     Boid *newBoid = new Boid();  // Allocate Boid on the heap
